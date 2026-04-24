@@ -18,8 +18,8 @@
     @include('components.sidebar_admin')
 
     {{-- Main Content --}}
-    <main class="ml-56 min-h-screen p-6">
-        <!-- content -->
+    <main class="ml-48 min-h-screen bg-gray-50 p-6">
+        <!-- isi content -->
     </main>
 
 </body>

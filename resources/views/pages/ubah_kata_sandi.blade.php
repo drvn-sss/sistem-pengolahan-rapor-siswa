@@ -28,7 +28,6 @@
     @include('components.sidebar_admin')
 
     {{-- Main Content --}}
-<<<<<<< HEAD
     <main class="ml-48 min-h-screen bg-gray-50 p-6">
         <div class="max-w-2xl">
             {{-- Page Header --}}
@@ -274,11 +273,3 @@
 
 </body>
 </html>
-=======
-    <main class="ml-56 min-h-screen p-6">
-        <!-- content -->
-    </main>
-
-</body>
-</html>
->>>>>>> 90589c546130addd64377734b33bfee4a4f4cb9f
