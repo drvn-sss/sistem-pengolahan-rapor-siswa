@@ -61,18 +61,45 @@
 </head>
 <body class="bg-gray-50 font-sans antialiased text-gray-900">
 
-    {{-- Global Toast Notification --}}
+    {{-- Consistent Minimalist Dark Toast --}}
     <div x-data x-show="$store.toast.show" 
          x-transition:enter="transition ease-out duration-300"
-         class="fixed bottom-5 right-5 z-[100] max-w-sm w-full"
+         x-transition:enter-start="opacity-0 translate-x-10"
+         x-transition:enter-end="opacity-100 translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0 translate-x-10"
+         class="fixed bottom-10 right-10 z-[100] max-w-sm w-full"
          x-cloak>
-        <div class="bg-white/80 backdrop-blur-md border border-gray-100 shadow-2xl rounded-xl p-3 flex items-center gap-3">
-            <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-green-500 text-white shadow-lg">
-                <i class="fa-solid fa-check text-sm"></i>
+        <div class="bg-gray-900 text-white rounded-2xl p-4 flex items-center gap-4 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] border border-white/10 relative overflow-hidden">
+            
+            {{-- Minimal Indicator Bar --}}
+            <div class="absolute left-0 top-0 bottom-0 w-1.5" 
+                 :class="{
+                    'bg-emerald-500': $store.toast.type === 'success',
+                    'bg-red-500': $store.toast.type === 'error',
+                    'bg-amber-500': $store.toast.type === 'warning',
+                    'bg-blue-500': $store.toast.type === 'info'
+                 }"></div>
+
+            <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center">
+                 <i class="fa-solid text-base" 
+                    :class="{
+                        'fa-check text-emerald-500': $store.toast.type === 'success',
+                        'fa-xmark text-red-500': $store.toast.type === 'error',
+                        'fa-triangle-exclamation text-amber-500': $store.toast.type === 'warning',
+                        'fa-info text-blue-500': $store.toast.type === 'info'
+                    }"></i>
             </div>
+
             <div class="flex-1">
-                <p class="text-xs font-bold text-gray-900" x-text="$store.toast.message"></p>
+                <p class="text-[9px] font-black uppercase tracking-[0.25em] text-gray-500 mb-0.5" x-text="$store.toast.type"></p>
+                <p class="text-xs font-bold text-white tracking-wide" x-text="$store.toast.message"></p>
             </div>
+
+            <button @click="$store.toast.show = false" class="w-8 h-8 flex items-center justify-center text-white/20 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
         </div>
     </div>
 
