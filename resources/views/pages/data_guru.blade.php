@@ -20,20 +20,24 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label for="mapel" class="block text-sm font-semibold text-gray-700 mb-1.5">Mata Pelajaran Utama</label>
-                        <select id="mapel" name="mapel" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
-                            <option value="">Pilih Mapel</option>
-                            <option>Matematika</option>
-                            <option>Bahasa Indonesia</option>
+                        <label for="jenis_kelamin_guru" class="block text-sm font-semibold text-gray-700 mb-1.5">Jenis Kelamin</label>
+                        <select id="jenis_kelamin_guru" name="jenis_kelamin" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
+                            <option value="">Pilih Jenis Kelamin</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
                         </select>
                     </div>
                     <div>
-                        <label for="status" class="block text-sm font-semibold text-gray-700 mb-1.5">Status Pegawai</label>
-                        <select id="status" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
-                            <option value="PNS">PNS</option>
-                            <option value="Honorer">Honorer</option>
-                        </select>
+                        <label for="no_telp" class="block text-sm font-semibold text-gray-700 mb-1.5">No. Telepon</label>
+                        <input type="text" id="no_telp" name="no_telp" placeholder="08xxxxxxxxxx" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white">
                     </div>
+                </div>
+                <div class="mb-4">
+                    <label for="status" class="block text-sm font-semibold text-gray-700 mb-1.5">Status Pegawai</label>
+                    <select id="status" name="status" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-gray-900 transition-colors bg-white cursor-pointer">
+                        <option value="PNS">PNS</option>
+                        <option value="Honorer">Honorer</option>
+                    </select>
                 </div>
                 <div class="flex items-center gap-3 mt-6">
                     <button type="submit" 
@@ -61,7 +65,8 @@
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">NIP</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Guru</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Mapel</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Jenis Kelamin</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">No. Telepon</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">Status</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -69,18 +74,19 @@
                     <tbody class="divide-y divide-gray-100">
                         @php
                             $guruData = [
-                                ['198001012005011001','Drs. Bambang Heru','Matematika','PNS'],
-                                ['198505122010022005','Siti Aminah, S.Pd','Bahasa Indonesia','PNS'],
-                                ['-','Rizky Pratama, S.Kom','Informatika','Honorer'],
-                                ['197812152003121002','H. Mulyadi, M.Pd','Pendidikan Agama','PNS'],
+                                ['198001012005011001','Drs. Bambang Heru','L','081234567890','PNS'],
+                                ['198505122010022005','Siti Aminah, S.Pd','P','085678901234','PNS'],
+                                ['-','Rizky Pratama, S.Kom','L','087654321098','Honorer'],
+                                ['197812152003121002','H. Mulyadi, M.Pd','L','082345678901','PNS'],
                             ];
                         @endphp
                         @foreach($guruData as $g)
                         <tr class="hover:bg-blue-50/40 transition-colors">
                             <td class="px-6 py-4 text-sm text-gray-400 font-medium tracking-tighter">{{ $g[0] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900 font-bold">{{ $g[1] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $g[2] }}</td>
-                            <td class="px-6 py-4 text-sm"><x-badge :type="$g[3] === 'PNS' ? 'success' : 'warning'">{{ $g[3] }}</x-badge></td>
+                            <td class="px-6 py-4 text-sm text-gray-700 font-medium">{{ $g[2] === 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600 font-medium">{{ $g[3] }}</td>
+                            <td class="px-6 py-4 text-sm"><x-badge :type="$g[4] === 'PNS' ? 'success' : 'warning'">{{ $g[4] }}</x-badge></td>
                             <td class="px-6 py-4 text-center"><x-action-buttons /></td>
                         </tr>
                         @endforeach
