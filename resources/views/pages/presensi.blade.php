@@ -3,7 +3,37 @@
 
 @section('content')
     <div class="max-w-full">
-        <div x-data="{ mapel: 'Matematika Wajib', kelas: 'X MIPA 1', tanggal: '2023-10-15', formatTanggal() { if (!this.tanggal) return '-'; return new Date(this.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); } }" class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div x-data="{ 
+            mapel: 'Matematika Wajib', 
+            kelas: 'X MIPA 1', 
+            tanggal: '2023-10-15',
+            presensiList: [
+                { nis: '1809599001', nama: 'Samuel Simorangkir', status: 'hadir', ket: '' },
+                { nis: '1809599002', nama: 'Budi Santoso', status: 'hadir', ket: '' },
+                { nis: '1809599003', nama: 'Citra Kirana', status: 'hadir', ket: '' },
+                { nis: '1809599004', nama: 'Dewi Lestari', status: 'izin', ket: 'Izin keluarga' },
+                { nis: '1809599005', nama: 'Eka Saputra', status: 'hadir', ket: '' },
+                { nis: '1809599006', nama: 'Fitriani', status: 'hadir', ket: '' },
+                { nis: '1809599007', nama: 'Gilang Ramadan', status: 'hadir', ket: '' },
+                { nis: '1809599008', nama: 'Hesti Purwanti', status: 'tidak_hadir', ket: 'Sakit demam' },
+                { nis: '1809599009', nama: 'Ivan Gunawan', status: 'hadir', ket: '' },
+                { nis: '1809599010', nama: 'Julia Perez', status: 'hadir', ket: '' },
+            ],
+            formatTanggal() { 
+                if (!this.tanggal) return '-'; 
+                return new Date(this.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }); 
+            },
+            get stats() {
+                return {
+                    hadir: this.presensiList.filter(s => s.status === 'hadir').length,
+                    tidakHadir: this.presensiList.filter(s => s.status === 'tidak_hadir').length,
+                    izin: this.presensiList.filter(s => s.status === 'izin').length
+                }
+            },
+            markAllHadir() {
+                this.presensiList.forEach(s => s.status = 'hadir');
+            }
+        }" class="bg-white rounded-lg shadow-sm border border-gray-200">
             {{-- Toolbar --}}
             <div class="p-6 border-b border-gray-200">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -26,19 +56,42 @@
                         </div>
                         <input type="date" x-model="tanggal" class="w-40 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer">
                     </div>
-                    <button class="px-4 py-2 bg-gray-700 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-all flex items-center gap-2 whitespace-nowrap shadow-sm hover:shadow-md">
-                        <i class="fa-solid fa-floppy-disk text-lg"></i><span>Simpan Presensi</span>
-                    </button>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <button @click="markAllHadir()" class="px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold rounded-lg hover:bg-blue-100 border border-blue-200 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
+                            <i class="fa-solid fa-check-double"></i><span>Hadir Semua</span>
+                        </button>
+                        <button class="px-4 py-2 bg-gray-700 text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-all flex items-center gap-2 whitespace-nowrap shadow-sm hover:shadow-md">
+                            <i class="fa-solid fa-floppy-disk text-lg"></i><span>Simpan Presensi</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {{-- Context Header --}}
-            <div class="px-6 py-4 bg-blue-50/50 border-b border-gray-200">
-                <h2 class="text-base font-bold text-gray-900">Form Input Presensi Siswa</h2>
-                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-2 text-sm">
-                    <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-book text-blue-600 opacity-80"></i><span>Mata Pelajaran: <strong class="text-gray-900" x-text="mapel"></strong></span></div>
-                    <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-users text-blue-600 opacity-80"></i><span>Kelas: <strong class="text-gray-900" x-text="kelas"></strong></span></div>
-                    <div class="flex items-center gap-2 text-gray-600"><i class="fa-regular fa-calendar-days text-blue-600 opacity-80"></i><span>Tanggal: <strong class="text-gray-900" x-text="formatTanggal()"></strong></span></div>
+            <div class="px-6 py-4 bg-gray-50/50 border-b border-gray-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-base font-bold text-gray-900">Form Input Presensi Siswa</h2>
+                        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-2 text-sm">
+                            <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-book text-blue-600 opacity-80"></i><span>Mata Pelajaran: <strong class="text-gray-900" x-text="mapel"></strong></span></div>
+                            <div class="flex items-center gap-2 text-gray-600"><i class="fa-solid fa-users text-blue-600 opacity-80"></i><span>Kelas: <strong class="text-gray-900" x-text="kelas"></strong></span></div>
+                            <div class="flex items-center gap-2 text-gray-600"><i class="fa-regular fa-calendar-days text-blue-600 opacity-80"></i><span>Tanggal: <strong class="text-gray-900" x-text="formatTanggal()"></strong></span></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="px-4 py-2 bg-green-50 border border-green-100 rounded-lg text-center min-w-[80px]">
+                            <div class="text-[10px] font-bold text-green-600 uppercase tracking-wider">Hadir</div>
+                            <div class="text-lg font-black text-green-700" x-text="stats.hadir"></div>
+                        </div>
+                        <div class="px-4 py-2 bg-red-50 border border-red-100 rounded-lg text-center min-w-[80px]">
+                            <div class="text-[10px] font-bold text-red-600 uppercase tracking-wider">Absen</div>
+                            <div class="text-lg font-black text-red-700" x-text="stats.tidakHadir"></div>
+                        </div>
+                        <div class="px-4 py-2 bg-blue-50 border border-blue-100 rounded-lg text-center min-w-[80px]">
+                            <div class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Izin</div>
+                            <div class="text-lg font-black text-blue-700" x-text="stats.izin"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -57,31 +110,40 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @php
-                            $presensiData = [
-                                ['1809599001','Samuel Simorangkir','hadir',''],
-                                ['1809599002','Budi Santoso','hadir',''],
-                                ['1809599003','Citra Kirana','hadir',''],
-                                ['1809599004','Dewi Lestari','izin','Izin keluarga'],
-                                ['1809599005','Eka Saputra','hadir',''],
-                                ['1809599006','Fitriani','hadir',''],
-                                ['1809599007','Gilang Ramadan','hadir',''],
-                                ['1809599008','Hesti Purwanti','tidak_hadir','Sakit demam'],
-                                ['1809599009','Ivan Gunawan','hadir',''],
-                                ['1809599010','Julia Perez','hadir',''],
-                            ];
-                        @endphp
-                        @foreach($presensiData as $i => $p)
-                        <tr class="hover:bg-blue-50 transition-colors duration-150 border-l-4 border-transparent hover:border-blue-500 {{ $i % 2 === 0 ? 'bg-white' : 'bg-gray-50' }}">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $i + 1 }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ $p[0] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-medium whitespace-nowrap">{{ $p[1] }}</td>
-                            <td class="px-6 py-4 text-center"><input type="radio" name="status_{{ $i+1 }}" value="hadir" class="w-5 h-5 text-gray-900 bg-gray-100 border-gray-400 focus:ring-gray-900 cursor-pointer" {{ $p[2]==='hadir'?'checked':'' }}></td>
-                            <td class="px-6 py-4 text-center"><input type="radio" name="status_{{ $i+1 }}" value="tidak_hadir" class="w-5 h-5 text-gray-900 bg-gray-100 border-gray-400 focus:ring-gray-900 cursor-pointer" {{ $p[2]==='tidak_hadir'?'checked':'' }}></td>
-                            <td class="px-6 py-4 text-center"><input type="radio" name="status_{{ $i+1 }}" value="izin" class="w-5 h-5 text-gray-900 bg-gray-100 border-gray-400 focus:ring-gray-900 cursor-pointer" {{ $p[2]==='izin'?'checked':'' }}></td>
-                            <td class="px-6 py-4"><input type="text" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-900 shadow-sm bg-white" {{ $p[3] ? 'placeholder='.$p[3] : '' }}></td>
-                        </tr>
-                        @endforeach
+                        <template x-for="(p, index) in presensiList" :key="p.nis">
+                            <tr class="hover:bg-blue-50 transition-colors duration-150 border-l-4 border-transparent hover:border-blue-500" :class="index % 2 !== 0 ? 'bg-gray-50' : 'bg-white'">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900" x-text="index + 1"></td>
+                                <td class="px-6 py-4 text-sm text-gray-700 font-semibold" x-text="p.nis"></td>
+                                <td class="px-6 py-4 text-sm text-gray-900 font-medium whitespace-nowrap" x-text="p.nama"></td>
+                                <td class="px-6 py-4 text-center">
+                                    <label class="inline-flex items-center justify-center cursor-pointer group">
+                                        <input type="radio" :name="'status_'+p.nis" value="hadir" x-model="p.status" class="hidden">
+                                        <div :class="p.status === 'hadir' ? 'bg-green-100 text-green-700 border-green-300 ring-2 ring-green-200' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-all group-hover:scale-110">
+                                            <i class="fa-solid fa-check"></i>
+                                        </div>
+                                    </label>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <label class="inline-flex items-center justify-center cursor-pointer group">
+                                        <input type="radio" :name="'status_'+p.nis" value="tidak_hadir" x-model="p.status" class="hidden">
+                                        <div :class="p.status === 'tidak_hadir' ? 'bg-red-100 text-red-700 border-red-300 ring-2 ring-red-200' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-all group-hover:scale-110">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </div>
+                                    </label>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <label class="inline-flex items-center justify-center cursor-pointer group">
+                                        <input type="radio" :name="'status_'+p.nis" value="izin" x-model="p.status" class="hidden">
+                                        <div :class="p.status === 'izin' ? 'bg-blue-100 text-blue-700 border-blue-300 ring-2 ring-blue-200' : 'bg-gray-100 text-gray-400 border-gray-200'" class="w-10 h-10 flex items-center justify-center rounded-full border transition-all group-hover:scale-110">
+                                            <i class="fa-solid fa-info"></i>
+                                        </div>
+                                    </label>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <input type="text" x-model="p.ket" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-200 shadow-sm bg-white transition-all" :placeholder="p.status !== 'hadir' ? 'Alasan...' : ''">
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </div>

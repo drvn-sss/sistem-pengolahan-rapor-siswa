@@ -3,69 +3,34 @@
 @section('title', 'Lupa Sandi - Smart Rapor')
 
 @section('content')
-    {{-- Judul --}}
-    <h1 class="text-sm font-semibold tracking-[0.25em] uppercase text-gray-500 mb-5">
-        Lupa Sandi
-    </h1>
-
-    {{-- Card --}}
-    <div class="bg-white rounded-2xl shadow-md w-full max-w-md px-10 py-10">
-
-        {{-- Deskripsi --}}
-        <p class="text-sm text-gray-500 text-center leading-relaxed mb-6">
-            Silakan masukkan email Anda, sistem kami akan memverifikasi email tersebut
-            dan mengirimkan tautan untuk mengatur ulang kata sandi Anda.
-        </p>
-
-        {{-- Session Status (sukses kirim email) --}}
-        @if (session('status'))
-            <div class="mb-5 p-3 rounded-lg bg-green-50 border border-green-200">
-                <p class="text-sm text-green-700">{{ session('status') }}</p>
-            </div>
-        @endif
-
-        {{-- Form --}}
-        <form method="POST" action="{{ url('/forgot-password') }}">
-            @csrf
-
-            {{-- Email --}}
+    <div class="w-full max-w-sm">
+        {{-- Ultra-Flat Card --}}
+        <div class="bg-white border border-gray-200 p-10 text-center">
+            
             <div class="mb-6">
-                <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Email
-                </label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    autofocus
-                    autocomplete="email"
-                    class="w-full border border-gray-400 rounded-lg px-4 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition @error('email') border-red-400 @enderror"
-                >
-                @error('email')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
+                <h2 class="text-sm font-bold text-black uppercase tracking-widest">Lupa Sandi</h2>
+                <p class="text-[11px] text-gray-500 mt-2">Masukkan email Anda untuk instruksi pemulihan.</p>
             </div>
 
-            {{-- Tombol Kirim --}}
-            <button
-                type="submit"
-                class="w-full bg-[#4B5563] hover:bg-[#374151] active:bg-[#1F2937] text-white text-sm font-semibold rounded-lg py-3 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-            >
-                Kirim tautan reset sandi
-            </button>
+            {{-- Form --}}
+            <form method="POST" action="#" class="space-y-6 text-left">
+                @csrf
 
-        </form>
+                <div class="space-y-1">
+                    <label for="email" class="text-[10px] font-bold text-gray-500 uppercase">Email</label>
+                    <input type="email" id="email" name="email" required
+                           class="w-full px-4 py-2 text-sm border border-gray-300 focus:border-black outline-none transition-none bg-white"
+                           placeholder="email@sekolah.sch.id">
+                </div>
 
-        {{-- Kembali ke Login --}}
-        <div class="text-center mt-4">
-            <a
-                href="{{ url('/login') }}"
-                class="text-sm text-gray-500 hover:underline hover:text-gray-700"
-            >
-                Kembali ke Login
-            </a>
+                <button type="submit" class="w-full py-3 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-none">
+                    Kirim Link Reset
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 text-[10px]">
+                <a href="/login" class="font-bold text-gray-400 hover:text-black">KEMBALI KE LOGIN</a>
+            </div>
         </div>
-
     </div>
 @endsection
