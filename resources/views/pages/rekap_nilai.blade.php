@@ -58,7 +58,6 @@
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">UAS</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Nilai Akhir</th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -85,13 +84,6 @@
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $r[5] }}</td>
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">{{ $r[6] }}</td>
                             <td class="px-6 py-4 text-center"><x-badge :type="$r[7] === 'Tuntas' ? 'success' : 'warning'">{{ $r[7] }}</x-badge></td>
-                            <td class="px-6 py-4 text-center">
-                                <div class="flex items-center justify-center">
-                                    <button title="Cetak Rekap Siswa" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
-                                        <i class="fa-solid fa-print"></i><span>Cetak</span>
-                                    </button>
-                                </div>
-                            </td>
                         </tr>
                         @endforeach
                     </tbody>
