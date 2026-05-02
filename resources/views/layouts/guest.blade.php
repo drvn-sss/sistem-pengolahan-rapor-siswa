@@ -30,6 +30,9 @@
         body { font-family: 'Poppins', sans-serif; }
     </style>
 
+    {{-- Alpine.js --}}
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     @stack('styles')
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center bg-gray-50 font-sans px-4 antialiased">

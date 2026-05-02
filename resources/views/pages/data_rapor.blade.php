@@ -8,7 +8,7 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full">
-                    <thead class="bg-gradient-to-r from-gray-900 to-gray-800">
+                    <thead class="bg-gray-900">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NO</th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">NIS</th>
