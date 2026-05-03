@@ -20,7 +20,7 @@ class RekapNilaiController extends Controller
             })
             ->paginate(20);
 
-        $kelasList = Kelas::where('status', 'Aktif')->orderBy('nama_kelas')->get();
+        $kelasList = Kelas::orderBy('nama_kelas')->get();
         $mapelList = Mapel::where('status', 'Aktif')->orderBy('nama_mapel')->get();
 
         return view('pages.rekap_nilai', compact('nilaiData', 'kelasList', 'mapelList'));
