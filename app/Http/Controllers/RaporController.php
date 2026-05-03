@@ -51,7 +51,7 @@ class RaporController extends Controller
             return $siswa;
         });
 
-        $kelasList = Kelas::where('status', 'Aktif')->orderBy('nama_kelas')->get();
+        $kelasList = Kelas::orderBy('nama_kelas')->get();
 
         return view('pages.data_rapor', compact('siswaData', 'kelasList'));
     }

@@ -15,7 +15,7 @@ class DashboardController extends Controller
     {
         $totalSiswa = Siswa::where('status', 'Aktif')->count();
         $totalGuru = Guru::where('status', 'Aktif')->count();
-        $totalKelas = Kelas::where('status', 'Aktif')->count();
+        $totalKelas = Kelas::count();
         $totalMapel = Mapel::where('status', 'Aktif')->count();
 
         // Data untuk chart distribusi nilai

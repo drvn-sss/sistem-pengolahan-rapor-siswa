@@ -22,7 +22,7 @@ class PengampuController extends Controller
 
         $gurus = Guru::where('status', 'Aktif')->orderBy('nama_guru')->get();
         $mapels = Mapel::where('status', 'Aktif')->orderBy('nama_mapel')->get();
-        $kelas = Kelas::where('status', 'Aktif')->orderBy('nama_kelas')->get();
+        $kelas = Kelas::orderBy('nama_kelas')->get();
         $semesters = Semester::with('tahunAjaran')->orderByDesc('id')->get();
 
         return view('pages.pengampu', compact('pengampus', 'gurus', 'mapels', 'kelas', 'semesters'));

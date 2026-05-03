@@ -19,7 +19,7 @@ class SiswaController extends Controller
             }
         }])->orderBy('nama_siswa')->paginate(20);
 
-        $kelasList = Kelas::where('status', 'Aktif')->orderBy('nama_kelas')->get();
+        $kelasList = Kelas::orderBy('nama_kelas')->get();
 
         return view('pages.data_siswa', compact('siswaData', 'kelasList'));
     }
