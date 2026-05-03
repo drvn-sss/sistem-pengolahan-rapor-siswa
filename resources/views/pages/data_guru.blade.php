@@ -95,7 +95,7 @@
             </div>
 
             <div class="p-6 bg-gray-50/30 border-t border-gray-100">
-                {{ $guruData->links() }}
+                <x-pagination :paginator="$guruData" />
             </div>
         </div>
     </div>

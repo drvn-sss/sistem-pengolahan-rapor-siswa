@@ -69,7 +69,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-6 bg-gray-50/30 border-t border-gray-100">{{ $nilaiData->links() }}</div>
+            <div class="p-6 bg-gray-50/30 border-t border-gray-100"><x-pagination :paginator="$nilaiData" /></div>
         </div>
 
         <div class="mt-6 bg-white rounded-lg border border-gray-200 p-6">

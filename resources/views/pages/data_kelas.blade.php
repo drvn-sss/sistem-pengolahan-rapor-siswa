@@ -66,7 +66,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-6 bg-gray-50/30 border-t border-gray-100">{{ $kelasData->links() }}</div>
+            <div class="p-6 bg-gray-50/30 border-t border-gray-100"><x-pagination :paginator="$kelasData" /></div>
         </div>
     </div>
 @endsection
