@@ -2,98 +2,131 @@
 @section('title', 'Ubah Kata Sandi')
 
 @section('content')
-    <div class="max-w-xl mx-auto" x-data="{ showOld: false, showNew: false, showConfirm: false }">
-        {{-- Header Section --}}
-        <div class="mb-8 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 rounded-lg mb-4 border border-blue-100">
-                <i class="fa-solid fa-shield-halved text-2xl text-blue-600"></i>
-            </div>
-            <h1 class="text-2xl font-bold text-gray-900">Keamanan Akun</h1>
-            <p class="text-sm text-gray-500 mt-2">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan data.</p>
+    <div class="max-w-4xl mx-auto" x-data="{ activeTab: 'profil', showOld: false, showNew: false, showConfirm: false }">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-900">Pengaturan Akun</h1>
+            <p class="text-sm text-gray-500 mt-1">Kelola informasi profil dan keamanan akun Anda.</p>
         </div>
 
-        {{-- Form Card --}}
-        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <div class="p-8">
-                <form action="#" method="POST" @submit.prevent="$dispatch('notify', { message: 'Kata sandi Anda berhasil diperbarui.' })">
-                    @csrf
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col md:flex-row">
+            {{-- Sidebar Tabs --}}
+            <div class="w-full md:w-64 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-200 flex flex-row md:flex-col p-4 md:p-6 gap-2 overflow-x-auto">
+                <button @click="activeTab = 'profil'" 
+                        :class="activeTab === 'profil' ? 'bg-white border-gray-200 shadow-sm text-blue-600' : 'border-transparent text-gray-600 hover:bg-gray-100'"
+                        class="px-4 py-3 text-sm font-bold rounded-lg border transition-all flex items-center gap-3 text-left whitespace-nowrap md:whitespace-normal w-full">
+                    <i class="fa-solid fa-user-circle text-lg"></i>
+                    <span>Informasi Profil</span>
+                </button>
+                <button @click="activeTab = 'keamanan'" 
+                        :class="activeTab === 'keamanan' ? 'bg-white border-gray-200 shadow-sm text-blue-600' : 'border-transparent text-gray-600 hover:bg-gray-100'"
+                        class="px-4 py-3 text-sm font-bold rounded-lg border transition-all flex items-center gap-3 text-left whitespace-nowrap md:whitespace-normal w-full">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                    <span>Keamanan Akun</span>
+                </button>
+            </div>
+
+            {{-- Content Area --}}
+            <div class="flex-1 p-6 md:p-8">
+                
+                {{-- Tab: Informasi Profil --}}
+                <div x-show="activeTab === 'profil'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                    <h2 class="text-lg font-bold text-gray-900 mb-6">Informasi Pribadi</h2>
                     
-                    {{-- Password Lama --}}
-                    <div class="mb-6">
-                        <label for="current_password" class="block text-sm font-bold text-gray-700 mb-2">Kata Sandi Saat Ini</label>
-                        <div class="relative group">
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                                <i class="fa-solid fa-lock text-sm"></i>
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-8">
+                        <div class="relative">
+                            <div class="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border-4 border-white shadow-sm overflow-hidden">
+                                <i class="fa-solid fa-user text-4xl"></i>
                             </div>
-                            <input :type="showOld ? 'text' : 'password'" id="current_password" name="current_password" 
-                                   class="w-full pl-11 pr-12 py-3.5 text-sm border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white"
-                                   placeholder="••••••••">
-                            <button type="button" @click="showOld = !showOld" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                                <i class="fa-solid" :class="showOld ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            <button class="absolute bottom-0 right-0 w-8 h-8 bg-gray-900 rounded-full text-white flex items-center justify-center border-2 border-white hover:bg-gray-800 transition-colors" title="Ubah Foto">
+                                <i class="fa-solid fa-camera text-xs"></i>
                             </button>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-gray-900">{{ auth()->user()->nama }}</h3>
+                            <p class="text-sm text-gray-500">JPG, GIF atau PNG maksimal 2MB.</p>
                         </div>
                     </div>
 
-                    <div class="h-px bg-gray-100 mb-6"></div>
-
-                    {{-- Password Baru --}}
-                    <div class="mb-6">
-                        <label for="new_password" class="block text-sm font-bold text-gray-700 mb-2">Kata Sandi Baru</label>
-                        <div class="relative group">
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                                <i class="fa-solid fa-key text-sm"></i>
+                    <form action="#" method="POST" @submit.prevent="$dispatch('notify', { message: 'Profil berhasil diperbarui.', type: 'success' })">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
+                                <input type="text" value="{{ auth()->user()->nama }}" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-gray-50" readonly>
                             </div>
-                            <input :type="showNew ? 'text' : 'password'" id="new_password" name="new_password" 
-                                   class="w-full pl-11 pr-12 py-3.5 text-sm border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white"
-                                   placeholder="Minimal 8 karakter">
-                            <button type="button" @click="showNew = !showNew" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                                <i class="fa-solid" :class="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">NIP / Username</label>
+                                <input type="text" value="{{ auth()->user()->username }}" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-gray-50" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-8">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Kontak</label>
+                            <input type="email" value="{{ auth()->user()->email }}" class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                                Simpan Profil
                             </button>
                         </div>
-                        <p class="mt-2 text-[11px] text-gray-400 flex items-center gap-1.5 px-1">
-                            <i class="fa-solid fa-circle-info"></i> Gunakan kombinasi huruf, angka, dan simbol.
-                        </p>
-                    </div>
+                    </form>
+                </div>
 
-                    {{-- Konfirmasi Password --}}
-                    <div class="mb-8">
-                        <label for="confirm_password" class="block text-sm font-bold text-gray-700 mb-2">Konfirmasi Kata Sandi Baru</label>
-                        <div class="relative group">
-                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                                <i class="fa-solid fa-circle-check text-sm"></i>
+                {{-- Tab: Keamanan --}}
+                <div x-show="activeTab === 'keamanan'" style="display: none;" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                    <h2 class="text-lg font-bold text-gray-900 mb-2">Ubah Kata Sandi</h2>
+                    <p class="text-sm text-gray-500 mb-6">Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.</p>
+
+                    <form action="#" method="POST" @submit.prevent="$dispatch('notify', { message: 'Kata sandi Anda berhasil diperbarui.', type: 'success' })">
+                        @csrf
+                        <div class="space-y-5 mb-8">
+                            {{-- Password Lama --}}
+                            <div>
+                                <label for="current_password" class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Saat Ini</label>
+                                <div class="relative group">
+                                    <input :type="showOld ? 'text' : 'password'" id="current_password" name="current_password" 
+                                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
+                                    <button type="button" @click="showOld = !showOld" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                                        <i class="fa-solid" :class="showOld ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <input :type="showConfirm ? 'text' : 'password'" id="confirm_password" name="confirm_password" 
-                                   class="w-full pl-11 pr-12 py-3.5 text-sm border border-gray-200 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white"
-                                   placeholder="Ulangi kata sandi baru">
-                            <button type="button" @click="showConfirm = !showConfirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                                <i class="fa-solid" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+
+                            <div class="h-px bg-gray-100 my-2"></div>
+
+                            {{-- Password Baru --}}
+                            <div>
+                                <label for="new_password" class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Baru</label>
+                                <div class="relative group">
+                                    <input :type="showNew ? 'text' : 'password'" id="new_password" name="new_password" 
+                                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
+                                    <button type="button" @click="showNew = !showNew" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                                        <i class="fa-solid" :class="showNew ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Konfirmasi Password --}}
+                            <div>
+                                <label for="confirm_password" class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Kata Sandi Baru</label>
+                                <div class="relative group">
+                                    <input :type="showConfirm ? 'text' : 'password'" id="confirm_password" name="confirm_password" 
+                                           class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:border-gray-900 outline-none transition-colors bg-white">
+                                    <button type="button" @click="showConfirm = !showConfirm" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                                        <i class="fa-solid" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-2">
+                                <i class="fa-solid fa-lock"></i>
+                                <span>Perbarui Sandi</span>
                             </button>
                         </div>
-                    </div>
+                    </form>
+                </div>
 
-                    {{-- Submit Button --}}
-                    <button type="submit" class="w-full py-4 bg-gray-900 text-white font-bold rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-rotate"></i>
-                        <span>Perbarui Kata Sandi</span>
-                    </button>
-                </form>
-            </div>
-            
-            {{-- Footer Note --}}
-            <div class="px-8 py-5 bg-gray-50 border-t border-gray-100 flex items-center gap-3">
-                <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
-                <p class="text-[11px] text-gray-500 font-medium">Anda akan diminta untuk login kembali setelah mengganti kata sandi demi alasan keamanan.</p>
-            </div>
-        </div>
-
-        {{-- Help Card --}}
-        <div class="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-100 flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                <i class="fa-solid fa-question text-sm"></i>
-            </div>
-            <div>
-                <h4 class="text-sm font-bold text-gray-900">Butuh bantuan?</h4>
-                <p class="text-xs text-gray-500">Hubungi Admin jika Anda lupa kata sandi saat ini.</p>
             </div>
         </div>
     </div>

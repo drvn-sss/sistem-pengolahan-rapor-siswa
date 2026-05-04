@@ -89,7 +89,7 @@
     @stack('head-scripts')
     @stack('styles')
 </head>
-<body class="bg-gray-50 font-sans antialiased text-gray-900">
+<body class="bg-gray-50 font-sans antialiased text-gray-900" @yield('body-attrs')>
 
     {{-- ═══ Flat Toast Notification ═══ --}}
     <div x-data x-show="$store.toast.show" x-cloak

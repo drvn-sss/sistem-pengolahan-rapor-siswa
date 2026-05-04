@@ -35,6 +35,7 @@
 
 
         {{-- Data Master (Dropdown) --}}
+        @if(auth()->check() && auth()->user()->isAdmin())
         <div class="px-2 mb-2" x-data="{ open: {{ request()->is('data_siswa') || request()->is('data_guru') || request()->is('data_kelas') || request()->is('data_mapel') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                     class="relative flex items-center gap-3 w-full px-3 py-2 rounded text-xs font-medium transition-all duration-150
@@ -80,6 +81,7 @@
                 </a>
             </div>
         </div>
+        @endif
 
 
         {{-- Akademik (Dropdown) --}}
@@ -108,6 +110,7 @@
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
                  class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
+                @if(auth()->check() && auth()->user()->isAdmin())
                 <a href="{{ route('pengampu') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('pengampu') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Pengampu
@@ -116,6 +119,8 @@
                                    {{ request()->is('rekap_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Rekap Nilai
                 </a>
+                @endif
+                @if(auth()->check() && auth()->user()->isGuru())
                  <a href="{{ route('input_nilai') }}" class="block px-3 py-1.5 text-xs font-medium rounded transition-all
                                    {{ request()->is('input_nilai') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Input nilai
@@ -124,6 +129,7 @@
                                    {{ request()->is('presensi') ? 'bg-gray-900 text-white font-bold shadow-sm' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}">
                     Presensi
                 </a>
+                @endif
             </div>
         </div>
 
@@ -142,7 +148,7 @@
             </a>
         </div>
 
-        {{-- Ubah Kata Sandi --}}
+        {{-- Pengaturan Akun --}}
         <div class="px-2">
             <a href="{{ route('ubah_kata_sandi') }}"
                class="relative flex items-center gap-3 px-3 py-2 rounded text-xs font-medium transition-all duration-150
@@ -151,9 +157,9 @@
                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 @if(request()->is('ubah_kata_sandi')) <div class="absolute left-0 w-1 h-4 bg-blue-500 rounded-r-full"></div> @endif
                 <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
                 </svg>
-                <span>Ubah Kata Sandi</span>
+                <span>Pengaturan Akun</span>
             </a>
         </div>
 

@@ -68,21 +68,21 @@ class DatabaseSeeder extends Seeder
         // 3. USER (Admin + Guru accounts)
         // =============================================
         User::create([
-            'name' => 'Administrator',
-            'username' => 'admin',
+            'nama' => 'Administrator',
+            'username' => '12345678', // Username admin diganti menjadi format NIP (angka)
             'email' => 'admin@sekolah.sch.id',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('12345678'), // Password admin disamakan dengan username (format NIP)
             'role' => 'admin',
             'guru_id' => null,
         ]);
 
-        // Buat akun login untuk 3 guru pertama
-        foreach (array_slice($gurus, 0, 3) as $i => $guru) {
+        // Buat akun login untuk semua guru
+        foreach ($gurus as $i => $guru) {
             User::create([
-                'name' => $guru->nama_guru,
-                'username' => 'guru' . ($i + 1),
+                'nama' => $guru->nama_guru,
+                'username' => $guru->nip, // Menggunakan NIP sebagai username default
                 'email' => 'guru' . ($i + 1) . '@sekolah.sch.id',
-                'password' => Hash::make('password'),
+                'password' => Hash::make($guru->nip), // Menggunakan NIP sebagai password default
                 'role' => 'guru',
                 'guru_id' => $guru->id,
             ]);
@@ -303,6 +303,6 @@ class DatabaseSeeder extends Seeder
         $this->command->info('   📊 ' . Pengampu::count() . ' pengampu');
         $this->command->info('   📊 ' . Nilai::count() . ' nilai');
         $this->command->info('   📊 ' . Presensi::count() . ' presensi');
-        $this->command->info('   📊 ' . User::count() . ' user (admin: admin/password)');
+        $this->command->info('   📊 ' . User::count() . ' user (Admin: 12345678/12345678, Guru: Login menggunakan NIP)');
     }
 }
