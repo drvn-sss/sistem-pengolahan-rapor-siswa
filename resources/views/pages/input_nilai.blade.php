@@ -107,7 +107,7 @@
 function inputNilai() {
     return {
         activeTab: 'pengetahuan',
-        isEditing: true,
+        isEditing: false,
         siswaList: @json($siswaJsonData),
 
         toggleEdit() {
