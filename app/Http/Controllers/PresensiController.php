@@ -78,9 +78,10 @@ class PresensiController extends Controller
         // Pre-build JSON-safe array for Alpine.js
         $presensiJsonData = collect($presensiList->items())->map(function ($s) {
             return [
+                'id' => $s->id,
                 'nis' => $s->nis,
                 'nama' => $s->nama_siswa,
-                'status' => $s->presensi_status,
+                'status' => $s->presensi_status ?? null, 
                 'ket' => $s->presensi_keterangan ?? '',
             ];
         })->values();
@@ -94,5 +95,40 @@ class PresensiController extends Controller
             'presensiList',
             'presensiJsonData'
         ));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'pengampu_id' => 'required|exists:pengampu,id',
+            'tanggal'     => 'required|date',
+            'presensi'    => 'required|array',
+        ]);
+
+        $pengampu = Pengampu::findOrFail($request->pengampu_id);
+        
+        // Proteksi Otoritas
+        if ($pengampu->guru_id !== auth()->user()->guru_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        foreach ($request->presensi as $siswaId => $data) {
+            // Hanya simpan jika status dipilih (tidak null/empty)
+            if (isset($data['status']) && !empty($data['status'])) {
+                Presensi::updateOrCreate(
+                    [
+                        'pengampu_id' => $pengampu->id,
+                        'siswa_id'    => $siswaId,
+                        'tanggal'     => $request->tanggal,
+                    ],
+                    [
+                        'status'     => $data['status'],
+                        'keterangan' => $data['ket'] ?? '',
+                    ]
+                );
+            }
+        }
+
+        return redirect()->back()->with('success', 'Data presensi berhasil disimpan ke database.');
     }
 }

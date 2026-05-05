@@ -60,5 +60,6 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:guru')->group(function () {
         Route::get('/input_nilai', [InputNilaiController::class, 'showInputNilai'])->name('input_nilai');
         Route::get('/presensi', [PresensiController::class, 'showPresensi'])->name('presensi');
+        Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
     });
 });
