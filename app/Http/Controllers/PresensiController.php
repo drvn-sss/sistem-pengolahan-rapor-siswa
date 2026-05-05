@@ -16,9 +16,13 @@ class PresensiController extends Controller
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
 
-        // Daftar pengampu untuk dropdown
+        // Ambil data user guru yang sedang login
+        $user = auth()->user();
+
+        // Daftar pengampu untuk dropdown (Hanya milik guru yang login)
         $pengampuList = Pengampu::with(['mapel', 'kelas'])
             ->when($semesterAktif, fn($q) => $q->where('semester_id', $semesterAktif->id))
+            ->where('guru_id', $user->guru_id)
             ->where('status', 'Aktif')
             ->get();
 
@@ -30,12 +34,17 @@ class PresensiController extends Controller
         $kelasId = $request->get('kelas_id');
 
         if ($mapelId && $kelasId) {
-            $selectedPengampu = $pengampuList->firstWhere(function ($p) use ($mapelId, $kelasId) {
-                return $p->mapel_id == $mapelId && $p->kelas_id == $kelasId;
-            });
+            $selectedPengampu = $pengampuList->where('mapel_id', $mapelId)
+                                           ->where('kelas_id', $kelasId)
+                                           ->first();
         } else {
             $selectedPengampuId = $request->get('pengampu_id', $pengampuList->first()?->id);
             $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
+        }
+
+        // Proteksi Akses: Jika pengampu tidak ditemukan (mencoba akses ID guru lain), kembalikan
+        if ($request->filled('pengampu_id') && !$selectedPengampu) {
+            return redirect()->route('presensi')->with('error', 'Anda tidak memiliki hak akses untuk melakukan absensi pada kelas ini.');
         }
 
         $tanggal = $request->get('tanggal', now()->format('Y-m-d'));

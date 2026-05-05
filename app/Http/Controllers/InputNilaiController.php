@@ -16,13 +16,17 @@ class InputNilaiController extends Controller
     {
         $semesterAktif = Semester::where('is_aktif', true)->first();
 
-        // Ambil daftar pengampu untuk dropdown
+        // Ambil data user guru yang sedang login
+        $user = auth()->user();
+
+        // Ambil daftar pengampu untuk dropdown (hanya milik guru tersebut)
         $pengampuList = Pengampu::with(['mapel', 'kelas'])
             ->when($semesterAktif, fn($q) => $q->where('semester_id', $semesterAktif->id))
+            ->where('guru_id', $user->guru_id) // Filter mutlak berdasarkan guru_id user
             ->where('status', 'Aktif')
             ->get();
 
-        // Ambil daftar mapel & kelas unik dari pengampu aktif
+        // Ambil daftar mapel & kelas unik dari pengampu milik guru tersebut
         $mapelList = $pengampuList->pluck('mapel')->unique('id')->values();
         $kelasList = $pengampuList->pluck('kelas')->unique('id')->values();
 
@@ -31,12 +35,17 @@ class InputNilaiController extends Controller
         $kelasId = $request->get('kelas_id');
 
         if ($mapelId && $kelasId) {
-            $selectedPengampu = $pengampuList->firstWhere(function ($p) use ($mapelId, $kelasId) {
-                return $p->mapel_id == $mapelId && $p->kelas_id == $kelasId;
-            });
+            $selectedPengampu = $pengampuList->where('mapel_id', $mapelId)
+                                           ->where('kelas_id', $kelasId)
+                                           ->first();
         } else {
             $selectedPengampuId = $request->get('pengampu_id', $pengampuList->first()?->id);
             $selectedPengampu = $pengampuList->firstWhere('id', $selectedPengampuId);
+        }
+
+        // Jika mencoba mengakses pengampu_id yang bukan miliknya (lewat URL), batalkan akses
+        if ($request->filled('pengampu_id') && !$selectedPengampu) {
+             return redirect()->route('input_nilai')->with('error', 'Anda tidak memiliki otoritas untuk mengakses data ini.');
         }
 
         // Ambil siswa di kelas tersebut + nilai mereka

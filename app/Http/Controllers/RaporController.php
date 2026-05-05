@@ -22,7 +22,8 @@ class RaporController extends Controller
             if ($semesterAktif) {
                 $q->whereHas('pengampu', fn($p) => $p->where('semester_id', $semesterAktif->id));
             }
-        }])->where('status', 'Aktif');
+        }])
+        ->where('status', 'Aktif');
 
         if ($request->filled('search')) {
             $query->where('nama_siswa', 'like', '%' . $request->search . '%');
@@ -115,13 +116,11 @@ class RaporController extends Controller
             return redirect()->back()->with('error', 'Data penempatan siswa tidak ditemukan.');
         }
 
-        // Cek otorisasi: Hanya Wali Kelas dari kelas tersebut atau Admin yang bisa simpan
+        // Cek otorisasi mutlak: Hanya Wali Kelas dari kelas tersebut yang bisa simpan (Admin pun diblokir sesuai permintaan)
         $user = auth()->user();
-        if (!$user->isAdmin()) {
-            $kelas = Kelas::find($kelasSiswa->kelas_id);
-            if (!$kelas || $kelas->wali_id !== $user->guru_id) {
-                return redirect()->back()->with('error', 'Anda tidak memiliki hak akses sebagai Wali Kelas untuk siswa ini.');
-            }
+        $kelas = Kelas::find($kelasSiswa->kelas_id);
+        if (!$user->isGuru() || !$kelas || $kelas->wali_id !== $user->guru_id) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Hanya Wali Kelas yang bersangkutan yang dapat memberikan catatan rapor.');
         }
 
         $kelasSiswa->update([

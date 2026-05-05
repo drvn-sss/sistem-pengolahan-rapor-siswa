@@ -77,7 +77,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex flex-col gap-1">
                                     <p class="text-[11px] text-gray-500 italic line-clamp-1 truncate w-40">{{ $r->kelasSiswa->first()?->catatan_wali ?? 'Belum ada catatan' }}</p>
-                                    @if(auth()->user()->isAdmin() || auth()->user()->guru_id === $r->kelasSiswa->first()?->kelas?->wali_id)
+                                    @if(auth()->user()->isGuru() && auth()->user()->guru_id === $r->kelasSiswa->first()?->kelas?->wali_id)
                                     <button @click="openModal('{{ $r->id }}', '{{ $r->nama_siswa }}', '{{ $r->kelasSiswa->first()?->catatan_wali }}')" class="text-[10px] font-bold text-blue-600 hover:text-blue-800 text-left">
                                         <i class="fa-solid fa-pen-to-square"></i> Edit Catatan
                                     </button>
