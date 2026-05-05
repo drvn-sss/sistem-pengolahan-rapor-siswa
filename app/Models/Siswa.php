@@ -14,8 +14,6 @@ class Siswa extends Model
         'nis',
         'nama_siswa',
         'jenis_kelamin',
-        'alamat',
-        'no_hp_ortu',
         'status',
     ];
 
