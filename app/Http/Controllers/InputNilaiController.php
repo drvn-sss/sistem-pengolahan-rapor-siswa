@@ -107,4 +107,41 @@ class InputNilaiController extends Controller
             'siswaJsonData'
         ));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'pengampu_id' => 'required|exists:pengampu,id',
+            'nilai' => 'required|array',
+        ]);
+
+        $pengampuId = $request->pengampu_id;
+        $dataNilai = $request->input('nilai');
+
+        foreach ($dataNilai as $siswaId => $fields) {
+            Nilai::updateOrCreate(
+                [
+                    'pengampu_id' => $pengampuId,
+                    'siswa_id' => $siswaId,
+                ],
+                [
+                    'tugas' => $fields['p_tugas'] ?? null,
+                    'ulangan_harian' => $fields['p_uh'] ?? null,
+                    'uts' => $fields['p_uts'] ?? null,
+                    'uas' => $fields['p_uas'] ?? null,
+                    'praktik' => $fields['k_praktik'] ?? null,
+                    'proyek' => $fields['k_proyek'] ?? null,
+                    'portofolio' => $fields['k_portofolio'] ?? null,
+                    'sikap_spiritual' => $fields['s_spiritual'] ?? 'B',
+                    'sikap_sosial' => $fields['s_sosial'] ?? 'B',
+                    'catatan_guru' => $fields['catatan'] ?? null,
+                ]
+            );
+        }
+
+        return redirect()->back()->with([
+            'success' => 'Data nilai siswa berhasil diperbarui dan disimpan ke database.',
+            'active_tab' => $request->active_tab
+        ]);
+    }
 }
