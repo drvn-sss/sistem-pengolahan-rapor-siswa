@@ -7,8 +7,19 @@
         {{-- Ultra-Flat Card --}}
         <div class="bg-white border border-gray-200 p-10 text-center rounded">
             
+            {{-- Preferred Logo Style --}}
+            <div class="flex items-center gap-2 mb-10 justify-center">
+                <div class="w-8 h-8 bg-gray-900 rounded flex items-center justify-center text-white">
+                    <i class="fa-solid fa-graduation-cap text-xs"></i>
+                </div>
+                <div class="text-left">
+                    <h1 class="text-sm font-black tracking-tighter text-gray-900 leading-none">Smart<span class="text-blue-600">Rapor</span></h1>
+                    <p class="text-[9px] font-medium text-gray-400 tracking-tight mt-0.5">Management</p>
+                </div>
+            </div>
+
             <div class="mb-6">
-                <h2 class="text-sm font-black text-black tracking-tight">Lupa Sandi</h2>
+                <h2 class="text-sm font-black text-black tracking-tighter uppercase">Lupa Sandi</h2>
                 <p class="text-[11px] text-gray-500 mt-2">Masukkan email Anda untuk instruksi pemulihan.</p>
             </div>
 

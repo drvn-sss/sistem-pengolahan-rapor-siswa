@@ -5,14 +5,18 @@
 @section('content')
     <div class="w-full max-w-sm" x-data="{ showPass: false }">
         {{-- Ultra-Flat Card --}}
-        <div class="bg-white border border-gray-200 p-10 rounded-2xl"> {{-- Rounded secukupnya --}}
+        <div class="bg-white border border-gray-200 p-10 rounded"> {{-- Standardized to 4px --}}
             
             {{-- Simple Logo --}}
+            {{-- Preferred Logo Style --}}
             <div class="flex items-center gap-2 mb-10 justify-center">
-                <div class="w-8 h-8 bg-black flex items-center justify-center text-white rounded">
+                <div class="w-8 h-8 bg-gray-900 rounded flex items-center justify-center text-white">
                     <i class="fa-solid fa-graduation-cap text-xs"></i>
                 </div>
-                <h1 class="text-sm font-black tracking-tighter text-black">Smart Rapor</h1>
+                <div class="text-left">
+                    <h1 class="text-sm font-black tracking-tighter text-gray-900 leading-none">Smart<span class="text-blue-600">Rapor</span></h1>
+                    <p class="text-[9px] font-medium text-gray-400 tracking-tight mt-0.5">Management</p>
+                </div>
             </div>
 
             {{-- Form --}}
