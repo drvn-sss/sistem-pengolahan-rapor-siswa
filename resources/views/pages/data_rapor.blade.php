@@ -32,15 +32,19 @@
             </form>
         </x-modal>
 
-        <div class="mb-5 flex flex-col gap-1">
-            <h1 class="text-xl font-bold text-gray-900 tracking-tight">Data Rapor Siswa</h1>
-            <p class="text-xs text-gray-500 font-medium">
-                Menampilkan data hasil belajar siswa untuk periode: 
-                <span class="text-blue-600 font-bold">{{ $selectedSemester ? $selectedSemester->tahunAjaran->nama . ' (' . $selectedSemester->semester . ')' : 'Tidak ada semester terpilih' }}</span>
-            </p>
-        </div>
+        <div class="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
+            {{-- Info Periode (Inside Container) --}}
+            <div class="px-5 py-3 bg-gray-50/50 border-b border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Periode Laporan</span>
+                </div>
+                <div class="text-[11px] font-bold text-gray-700 bg-white px-3 py-1 rounded border border-gray-200 shadow-sm">
+                    <i class="fa-solid fa-calendar-day text-blue-500 mr-1.5"></i>
+                    {{ $selectedSemester ? $selectedSemester->tahunAjaran->nama . ' — ' . $selectedSemester->semester : 'Pilih Semester' }}
+                </div>
+            </div>
 
-        <div class="bg-white rounded border border-gray-200">
             <x-search-toolbar 
                 placeholder="Cari nama siswa..." 
                 :filters="[
