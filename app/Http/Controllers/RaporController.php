@@ -49,17 +49,33 @@ class RaporController extends Controller
             });
         }
 
-        // Restriksi Akses: Hanya Wali Kelas yang bisa melihat rapor kelasnya
+        // Restriksi Akses: Wali Kelas bisa melihat kelas binaannya + rekam jejak siswa binaannya sekarang
         $user = auth()->user();
         if (!$user->isAdmin()) {
             if ($user->isWaliKelas()) {
-                $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)->pluck('kelas_id')->toArray();
+                $semesterAktif = Semester::where('is_aktif', true)->first();
+
+                // 1. ID Siswa yang SAAT INI (Semester Aktif) dibina oleh guru ini
+                $activeSiswaIds = KelasSiswa::whereIn('kelas_id', function($q) use ($user, $semesterAktif) {
+                    $q->select('kelas_id')->from('wali_kelas')
+                      ->where('guru_id', $user->guru_id)
+                      ->where('semester_id', $semesterAktif?->id);
+                })->pluck('siswa_id')->toArray();
+
+                // 2. ID Kelas yang dipimpin guru ini PADA SEMESTER YANG DIPILIH
+                $managedKelasIds = WaliKelas::where('guru_id', $user->guru_id)
+                    ->where('semester_id', $selectedSemesterId)
+                    ->pluck('kelas_id')
+                    ->toArray();
                 
-                $query->whereHas('kelasSiswa', function ($q) use ($managedKelasIds, $selectedSemesterId) {
-                    $q->whereIn('kelas_id', $managedKelasIds);
-                    if ($selectedSemesterId) {
-                        $q->where('semester_id', $selectedSemesterId);
-                    }
+                $query->where(function($q) use ($activeSiswaIds, $managedKelasIds, $selectedSemesterId) {
+                    // Akses Kelas: Lihat semua siswa di kelas yang dipimpin pada semester terpilih
+                    $q->whereHas('kelasSiswa', function ($sq) use ($managedKelasIds, $selectedSemesterId) {
+                        $sq->whereIn('kelas_id', $managedKelasIds)
+                           ->where('semester_id', $selectedSemesterId);
+                    })
+                    // Akses Rekam Jejak: Lihat histori siswa binaan sekarang di semester mana pun
+                    ->orWhereIn('id', $activeSiswaIds);
                 });
             } else {
                 $query->whereRaw('1 = 0');
