@@ -21,16 +21,30 @@ class AkademikController extends Controller
             'nama' => 'required|string|unique:tahun_ajaran,nama',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
+        ], [
+            'nama.unique' => 'Tahun Pelajaran ini sudah ada di database.',
+            'tanggal_selesai.after' => 'Tanggal selesai harus setelah tanggal mulai.'
         ]);
 
-        TahunAjaran::create([
-            'nama' => $request->nama,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'is_aktif' => false
-        ]);
+        DB::beginTransaction();
+        try {
+            $ta = TahunAjaran::create([
+                'nama' => $request->nama,
+                'tanggal_mulai' => $request->tanggal_mulai,
+                'tanggal_selesai' => $request->tanggal_selesai,
+                'is_aktif' => false
+            ]);
 
-        return redirect()->back()->with('success', 'Tahun ajaran berhasil ditambahkan.');
+            // Otomatis buat semester Ganjil dan Genap
+            Semester::create(['tahun_ajaran_id' => $ta->id, 'semester' => 'Ganjil', 'is_aktif' => false]);
+            Semester::create(['tahun_ajaran_id' => $ta->id, 'semester' => 'Genap', 'is_aktif' => false]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Tahun ajaran berhasil ditambahkan beserta semester Ganjil & Genap.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
+        }
     }
 
     public function storeSemester(Request $request)
