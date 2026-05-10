@@ -155,18 +155,11 @@ class DatabaseSeeder extends Seeder
                 KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2024/2025']['Ganjil']->id, 'kelas_id' => $k10->id]);
             }
 
-            // 8. PENGAMPU & NILAI
+            // 8. PENGAMPU
             $smtAktif = $smtList['2024/2025']['Ganjil'];
-            $pengampuMtk = Pengampu::create([
+            Pengampu::create([
                 'guru_id' => $guruAhmad->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k12->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif'
             ]);
-
-            $ksXII = KelasSiswa::where('kelas_id', $k12->id)->where('semester_id', $smtAktif->id)->get();
-            foreach ($ksXII as $ks) {
-                Nilai::create([
-                    'kelas_siswa_id' => $ks->id, 'pengampu_id' => $pengampuMtk->id, 'jenis_nilai' => 'UTS', 'skor' => rand(75, 95), 'catatan_guru' => 'Sangat baik, tingkatkan terus.'
-                ]);
-            }
 
             DB::commit();
             $this->command->info('✅ Seeder dengan Nama Realistis Berhasil Diterapkan!');

@@ -33,14 +33,14 @@
                         @forelse($nilaiData as $i => $n)
                         <tr>
                             <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ $nilaiData->firstItem() + $i }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->kelasSiswa->siswa->nama_siswa }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->pengampu->kelas->nama_kelas }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->pengampu->mapel->nama_mapel }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 font-semibold">{{ $n->siswa->nama_siswa }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_kelas }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $n->nama_mapel }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->tugas ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uts ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm text-gray-700 font-medium">{{ $n->uas ?? '-' }}</td>
                             <td class="px-6 py-4 text-center text-sm font-bold text-gray-900">{{ $n->rata_pengetahuan ?? '-' }}</td>
-                            @php $kkm = $n->pengampu->kkm; $tuntas = $n->rata_pengetahuan !== null && $n->rata_pengetahuan >= $kkm; @endphp
+                            @php $kkm = $n->kkm; $tuntas = $n->rata_pengetahuan !== null && $n->rata_pengetahuan >= $kkm; @endphp
                             <td class="px-6 py-4 text-center"><x-badge :type="$tuntas ? 'success' : 'warning'">{{ $tuntas ? 'Tuntas' : 'Belum Tuntas' }}</x-badge></td>
                             <td class="px-6 py-4 text-sm text-gray-500 italic">{{ $n->catatan_guru ?? '-' }}</td>
                         </tr>
