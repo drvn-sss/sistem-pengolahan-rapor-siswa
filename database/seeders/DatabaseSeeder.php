@@ -75,7 +75,7 @@ class DatabaseSeeder extends Seeder
                     'username' => $g->nip,
                     'nama' => $g->nama_guru,
                     'email' => strtolower(explode(' ', $g->nama_guru)[0]) . '@sekolah.sch.id',
-                    'password' => Hash::make($g->nip), // Password sekarang menggunakan NIP
+                    'password' => Hash::make($g->nip),
                     'role' => 'guru',
                     'guru_id' => $g->id
                 ]);
@@ -155,14 +155,21 @@ class DatabaseSeeder extends Seeder
                 KelasSiswa::create(['siswa_id' => $s->id, 'semester_id' => $smtList['2024/2025']['Ganjil']->id, 'kelas_id' => $k10->id]);
             }
 
-            // 8. PENGAMPU
+            // 8. PENGAMPU (Menghubungkan Guru, Mapel, Kelas, dan Semester)
             $smtAktif = $smtList['2024/2025']['Ganjil'];
-            Pengampu::create([
-                'guru_id' => $guruAhmad->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k12->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif'
-            ]);
+            
+            // Guru Ahmad mengajar MTK di XII
+            Pengampu::create(['guru_id' => $guruAhmad->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k12->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            // Guru Sri mengajar BIN di XI
+            Pengampu::create(['guru_id' => $guruSri->id, 'mapel_id' => $bin->id, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            // Guru Bambang mengajar BIN di X
+            Pengampu::create(['guru_id' => $guruBambang->id, 'mapel_id' => $bin->id, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            // Guru Dewi mengajar MTK di X dan XI
+            Pengampu::create(['guru_id' => $guruDewi->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k10->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
+            Pengampu::create(['guru_id' => $guruDewi->id, 'mapel_id' => $mtk->id, 'kelas_id' => $k11->id, 'semester_id' => $smtAktif->id, 'kkm' => 75, 'status' => 'Aktif']);
 
             DB::commit();
-            $this->command->info('✅ Seeder dengan Nama Realistis Berhasil Diterapkan!');
+            $this->command->info('✅ Seeder siap digunakan! Semua kelas dan mapel telah terhubung.');
 
         } catch (\Exception $e) {
             DB::rollBack();

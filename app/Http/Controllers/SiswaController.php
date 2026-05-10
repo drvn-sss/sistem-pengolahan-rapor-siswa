@@ -95,4 +95,85 @@ class SiswaController extends Controller
 
         return view('pages.data_siswa', compact('siswaData', 'kelasList', 'tahunAjaranList', 'angkatanList', 'semesterAktif'));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nis' => 'required|unique:siswa,nis',
+            'nama_siswa' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'angkatan' => 'required|integer',
+            'status' => 'required|in:Aktif,Tidak Aktif',
+            'kelas_id' => 'required|exists:kelas,id'
+        ]);
+
+        $semesterAktif = Semester::where('is_aktif', true)->first();
+
+        if (!$semesterAktif) {
+            return redirect()->back()->with('error', 'Tidak ada semester aktif. Harap aktifkan semester terlebih dahulu di menu Akademik.');
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function() use ($request, $semesterAktif) {
+            $siswa = Siswa::create($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));
+
+            // Hubungkan ke kelas di semester aktif
+            \App\Models\KelasSiswa::create([
+                'siswa_id' => $siswa->id,
+                'kelas_id' => $request->kelas_id,
+                'semester_id' => $semesterAktif->id
+            ]);
+        });
+
+        return redirect()->back()->with('success', 'Data siswa berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $siswa = Siswa::findOrFail($id);
+        $semesterAktif = Semester::where('is_aktif', true)->first();
+        
+        $request->validate([
+            'nis' => 'required|unique:siswa,nis,' . $id,
+            'nama_siswa' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'angkatan' => 'required|integer',
+            'status' => 'required|in:Aktif,Tidak Aktif',
+            'kelas_id' => 'nullable|exists:kelas,id'
+        ]);
+
+        \Illuminate\Support\Facades\DB::transaction(function() use ($siswa, $request, $semesterAktif) {
+            $siswa->update($request->only(['nis', 'nama_siswa', 'jenis_kelamin', 'angkatan', 'status']));
+
+            // Update penempatan kelas jika ada semester aktif
+            if ($request->filled('kelas_id') && $semesterAktif) {
+                \App\Models\KelasSiswa::updateOrCreate(
+                    ['siswa_id' => $siswa->id, 'semester_id' => $semesterAktif->id],
+                    ['kelas_id' => $request->kelas_id]
+                );
+            }
+        });
+
+        return redirect()->back()->with('success', 'Data siswa berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $siswa = Siswa::findOrFail($id);
+
+        \Illuminate\Support\Facades\DB::transaction(function() use ($id, $siswa) {
+            // 1. Ambil semua ID penempatan kelas siswa ini
+            $kelasSiswaIds = \App\Models\KelasSiswa::where('siswa_id', $id)->pluck('id');
+
+            // 2. Hapus semua nilai yang terhubung dengan penempatan kelas tersebut
+            \App\Models\Nilai::whereIn('kelas_siswa_id', $kelasSiswaIds)->delete();
+
+            // 3. Hapus data penempatan kelas
+            \App\Models\KelasSiswa::whereIn('id', $kelasSiswaIds)->delete();
+
+            // 4. Hapus data utama siswa
+            $siswa->delete();
+        });
+
+        return redirect()->back()->with('success', 'Data siswa dan seluruh riwayat nilai berhasil dihapus.');
+    }
 }

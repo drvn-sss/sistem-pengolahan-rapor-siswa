@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('kelas_siswa', function (Blueprint $table) {
-            $table->text('catatan_wali')->nullable();
+            $table->text('catatan_wali')->nullable()->after('semester_id');
         });
     }
 

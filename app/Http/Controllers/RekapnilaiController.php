@@ -36,12 +36,44 @@ class RekapNilaiController extends Controller
                 $join->on('kelas_siswa.id', '=', 'nilai.kelas_siswa_id')
                      ->on('pengampu.id', '=', 'nilai.pengampu_id');
             })
-            // Pivot vertikal ke horizontal - Menggunakan kunci yang konsisten dengan InputNilaiController
-            ->selectRaw("MAX(CASE WHEN nilai.jenis_nilai = 'p_tugas' THEN nilai.skor END) as tugas")
+            ->leftJoin('komponen_nilai', 'nilai.komponen_nilai_id', '=', 'komponen_nilai.id')
+            // Pivot vertikal ke horizontal - Mendukung Komponen Dinamis
+            ->selectRaw("ROUND(AVG(CASE WHEN komponen_nilai.tipe = 'p_tugas' THEN nilai.skor END), 1) as tugas")
+            ->selectRaw("ROUND(AVG(CASE WHEN komponen_nilai.tipe = 'p_uh' THEN nilai.skor END), 1) as uh")
             ->selectRaw("MAX(CASE WHEN nilai.jenis_nilai = 'p_uts' THEN nilai.skor END) as uts")
             ->selectRaw("MAX(CASE WHEN nilai.jenis_nilai = 'p_uas' THEN nilai.skor END) as uas")
-            ->selectRaw("MAX(CASE WHEN nilai.jenis_nilai = 'catatan' THEN nilai.catatan_guru END) as catatan_guru")
-            ->selectRaw("ROUND(AVG(CASE WHEN nilai.jenis_nilai IN ('p_tugas', 'p_uh', 'p_uts', 'p_uas') THEN nilai.skor END), 2) as rata_pengetahuan")
+            // Perhitungan Rata-rata Pengetahuan: ((2 * NH) + UTS + UAS) / 4
+            ->selectRaw("
+                ROUND(
+                    (
+                        (
+                            (COALESCE(AVG(CASE WHEN komponen_nilai.tipe = 'p_tugas' THEN nilai.skor END), 0) + 
+                             COALESCE(AVG(CASE WHEN komponen_nilai.tipe = 'p_uh' THEN nilai.skor END), 0)) 
+                             / (CASE WHEN EXISTS (SELECT 1 FROM komponen_nilai kn2 WHERE kn2.pengampu_id = pengampu.id AND kn2.tipe IN ('p_tugas', 'p_uh')) THEN 2 ELSE 1 END)
+                             * 2
+                        ) +
+                        COALESCE(MAX(CASE WHEN nilai.jenis_nilai = 'p_uts' THEN nilai.skor END), 0) +
+                        COALESCE(MAX(CASE WHEN nilai.jenis_nilai = 'p_uas' THEN nilai.skor END), 0)
+                    ) / 4, 1
+                ) as rata_pengetahuan
+            ")
+            // Cek Kelengkapan (3 Aspek): Pengetahuan, Keterampilan, dan Sikap
+            ->selectRaw("
+                CASE WHEN 
+                    -- Pengetahuan Lengkap
+                    MAX(CASE WHEN komponen_nilai.tipe = 'p_tugas' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN komponen_nilai.tipe = 'p_uh' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN nilai.jenis_nilai = 'p_uts' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN nilai.jenis_nilai = 'p_uas' THEN nilai.skor END) IS NOT NULL AND
+                    -- Keterampilan Minimal 1
+                    (MAX(CASE WHEN nilai.jenis_nilai = 'k_praktik' THEN nilai.skor END) IS NOT NULL OR
+                     MAX(CASE WHEN nilai.jenis_nilai = 'k_proyek' THEN nilai.skor END) IS NOT NULL OR
+                     MAX(CASE WHEN nilai.jenis_nilai = 'k_portofolio' THEN nilai.skor END) IS NOT NULL) AND
+                    -- Sikap Lengkap
+                    MAX(CASE WHEN nilai.jenis_nilai = 's_spiritual' THEN nilai.skor END) IS NOT NULL AND
+                    MAX(CASE WHEN nilai.jenis_nilai = 's_sosial' THEN nilai.skor END) IS NOT NULL
+                THEN 1 ELSE 0 END as is_lengkap
+            ")
             ->groupBy('kelas_siswa.id', 'pengampu.id', 'kelas_siswa.siswa_id', 'pengampu.kkm', 'mapel.nama_mapel', 'kelas.nama_kelas');
 
         // Filter berdasarkan Semester Aktif
